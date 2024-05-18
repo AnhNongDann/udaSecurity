@@ -7,9 +7,14 @@
   <groupId>com.udacity.catpoint</groupId>
   <artifactId>catpoint-parent</artifactId>
   <version>1.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
 
   <name>catpoint-parent</name>
   <url>http://www.example.com</url>
+  <modules>
+    <module>catpoint-image</module>
+    <module>catpoint-security</module>
+  </modules>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -19,46 +24,6 @@
 
   <dependencies>
     <!-- add your dependencies here! -->
-    <!-- https://mvnrepository.com/artifact/software.amazon.awssdk/aws-sdk-java -->
-    <dependency>
-      <groupId>software.amazon.awssdk</groupId>
-      <artifactId>aws-sdk-java</artifactId>
-      <version>2.24.13</version>
-      <scope>provided</scope>
-    </dependency>
-
-    <!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
-    <dependency>
-      <groupId>com.google.code.gson</groupId>
-      <artifactId>gson</artifactId>
-      <version>2.10.1</version>
-    </dependency>
-
-
-    <!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
-    <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava</artifactId>
-      <version>33.2.0-jre</version>
-    </dependency>
-
-
-    <!-- https://mvnrepository.com/artifact/com.miglayout/miglayout -->
-    <dependency>
-      <groupId>com.miglayout</groupId>
-      <artifactId>miglayout</artifactId>
-      <version>3.7.4</version>
-    </dependency>
-
-    <!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api -->
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-api</artifactId>
-      <version>5.11.0-M1</version>
-      <scope>test</scope>
-    </dependency>
-
-
   </dependencies>
 
   <build>
@@ -81,6 +46,11 @@
         <plugin>
           <artifactId>maven-surefire-plugin</artifactId>
           <version>2.22.1</version>
+          <configuration>
+            <argLine>
+              --add-opens com.udacity.catpoint.security/com.udacity.catpoint.security.service=ALL-UNNAMED
+            </argLine>
+          </configuration>
         </plugin>
         <plugin>
           <artifactId>maven-jar-plugin</artifactId>
