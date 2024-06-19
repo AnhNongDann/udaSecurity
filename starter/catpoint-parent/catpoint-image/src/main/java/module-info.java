@@ -6,4 +6,5 @@ module com.udacity.catpoint.image {
     requires software.amazon.awssdk.regions;
     requires software.amazon.awssdk.services.rekognition;
     exports com.udacity.catpoint.image.service;
+    exports com.udacity.catpoint.image.service.impl;
 }

@@ -1,5 +1,6 @@
-package com.udacity.catpoint.image.service;
+package com.udacity.catpoint.image.service.impl;
 
+import com.udacity.catpoint.image.service.BaseImageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
@@ -33,7 +34,7 @@ import java.util.stream.Collectors;
  *      aws.secret=[your Secret access key]
  *      aws.region=[an aws region of choice. For example: us-east-2]
  */
-public class AwsImageService {
+public class AwsImageService implements BaseImageService {
 
     private Logger log = LoggerFactory.getLogger(AwsImageService.class);
 
