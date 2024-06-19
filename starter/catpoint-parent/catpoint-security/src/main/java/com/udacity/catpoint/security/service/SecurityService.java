@@ -47,7 +47,7 @@ public class SecurityService {
         }
 
         if (armingStatus.equals(ArmingStatus.ARMED_AWAY) || armingStatus.equals(ArmingStatus.ARMED_HOME)){
-            Set<Sensor> sensors = securityRepository.getSensors();
+            List<Sensor> sensors = securityRepository.getSensors().stream().toList();
             sensors.forEach(sensor -> changeSensorActivationStatus(sensor, false));
         }
         securityRepository.setArmingStatus(armingStatus);
