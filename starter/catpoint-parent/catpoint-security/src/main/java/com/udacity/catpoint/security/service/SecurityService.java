@@ -32,6 +32,15 @@ public class SecurityService {
         this.imageService = imageService;
     }
 
+    public SecurityService(SecurityService securityService) {
+        this.securityRepository = securityService.securityRepository;
+        this.imageService = securityService.imageService;
+        // Copy status listeners if needed
+        this.statusListeners.addAll(securityService.statusListeners);
+        this.isContainsCat = securityService.isContainsCat;
+    }
+
+
     /**
      * Sets the current arming status for the system. Changing the arming status
      * may update both the alarm status.
@@ -96,11 +105,18 @@ public class SecurityService {
      */
     private void handleSensorActivated() {
         if(securityRepository.getArmingStatus() == ArmingStatus.DISARMED) {
-            return; //no problem if the system is disarmed
+            return; // Không vấn đề nếu hệ thống đã vô hiệu hóa
         }
         switch(securityRepository.getAlarmStatus()) {
-            case NO_ALARM -> setAlarmStatus(AlarmStatus.PENDING_ALARM);
-            case PENDING_ALARM -> setAlarmStatus(AlarmStatus.ALARM);
+            case NO_ALARM:
+                setAlarmStatus(AlarmStatus.PENDING_ALARM);
+                break;
+            case PENDING_ALARM:
+                setAlarmStatus(AlarmStatus.ALARM);
+                break;
+            default:
+                // Xử lý trường hợp mặc định nếu cần
+                break;
         }
     }
 
@@ -109,8 +125,15 @@ public class SecurityService {
      */
     private void handleSensorDeactivated() {
         switch(securityRepository.getAlarmStatus()) {
-            case PENDING_ALARM -> setAlarmStatus(AlarmStatus.NO_ALARM);
-            case ALARM -> setAlarmStatus(AlarmStatus.PENDING_ALARM);
+            case PENDING_ALARM:
+                setAlarmStatus(AlarmStatus.NO_ALARM);
+                break;
+            case ALARM:
+                setAlarmStatus(AlarmStatus.PENDING_ALARM);
+                break;
+            default:
+                // Xử lý trường hợp mặc định nếu cần
+                break;
         }
     }
 
@@ -148,7 +171,7 @@ public class SecurityService {
     }
 
     public Set<Sensor> getSensors() {
-        return securityRepository.getSensors();
+        return Collections.unmodifiableSet(securityRepository.getSensors());
     }
 
     public void addSensor(Sensor sensor) {
@@ -162,4 +185,6 @@ public class SecurityService {
     public ArmingStatus getArmingStatus() {
         return securityRepository.getArmingStatus();
     }
+
 }
+
