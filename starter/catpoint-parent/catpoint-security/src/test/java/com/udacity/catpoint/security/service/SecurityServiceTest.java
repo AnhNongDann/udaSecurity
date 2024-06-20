@@ -18,7 +18,7 @@ import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -177,4 +177,67 @@ public class SecurityServiceTest {
         verify(securityRepository, times(1)).setAlarmStatus(AlarmStatus.ALARM);
     }
 
+    //extra tests to cover the whole SecurityService class
+    //Status Listener test
+    @Test
+    void addStatusListener_StatusListenerNotifiedOnAlarmStatusChange() {
+        // Add the status listener
+        securityService.addStatusListener(statusListener);
+
+        // Simulate alarm status change
+        securityService.setAlarmStatus(AlarmStatus.ALARM);
+
+        // Verify that the listener was notified
+        verify(statusListener, times(1)).notify(AlarmStatus.ALARM);
+    }
+
+    @Test
+    void removeStatusListener_NoNotificationAfterRemoval() {
+        // Add the status listener
+        securityService.addStatusListener(statusListener);
+
+        // Remove the status listener
+        securityService.removeStatusListener(statusListener);
+
+        // Verify that the listener was not notified after removal
+        verify(statusListener, never()).catDetected(anyBoolean());
+    }
+
+    @Test
+    void addSensor_NewSensorAddedSuccessfully() {
+        Sensor newSensor = new Sensor("New Sensor", SensorType.DOOR);
+
+        securityService.addSensor(newSensor);
+
+        verify(securityRepository, times(1)).addSensor(newSensor);
+
+        Set<Sensor> sensors = new HashSet<>();
+        sensors.add(newSensor);
+
+        when(securityRepository.getSensors()).thenReturn(sensors);
+
+        assertEquals(1, securityService.getSensors().size());
+        assertEquals(newSensor, securityService.getSensors().iterator().next());
+    }
+
+    @Test
+    void removeSensor() {
+        Sensor sensorToRemove = new Sensor("Sensor to Remove", SensorType.WINDOW);
+        // Call the method under test
+        securityService.removeSensor(sensorToRemove);
+        // Verify that removeSensor was called with the correct sensor
+        verify(securityRepository, times(1)).removeSensor(sensorToRemove);
+    }
+
+    @Test
+    void getAlarmStatus_ReturnsCorrectStatus() {
+        // Mock the current alarm status
+        when(securityRepository.getAlarmStatus()).thenReturn(AlarmStatus.NO_ALARM);
+
+        // Call the method under test
+        AlarmStatus alarmStatus = securityService.getAlarmStatus();
+
+        // Verify the returned status is as expected
+        assertEquals(AlarmStatus.NO_ALARM, alarmStatus);
+    }
 }

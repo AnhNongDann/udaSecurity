@@ -15,14 +15,14 @@ import java.util.stream.Collectors;
  */
 public class ControlPanel extends JPanel {
 
-    private SecurityService securityService;
+    private transient SecurityService securityService;
     private Map<ArmingStatus, JButton> buttonMap;
 
 
     public ControlPanel(SecurityService securityService) {
         super();
         setLayout(new MigLayout());
-        this.securityService = securityService;
+        this.securityService = new SecurityService(securityService);
 
         JLabel panelLabel = new JLabel("System Control");
         panelLabel.setFont(StyleService.HEADING_FONT);
