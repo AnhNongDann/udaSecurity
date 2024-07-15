@@ -4,6 +4,8 @@ import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 
 import java.lang.reflect.Type;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.prefs.Preferences;
@@ -38,10 +40,14 @@ public class PretendDatabaseSecurityRepositoryImpl implements SecurityRepository
         if(sensorString == null) {
             sensors = new TreeSet<>();
         } else {
-            Type type = new TypeToken<Set<Sensor>>() {
-            }.getType();
+            Type type = new SensorSetTypeToken().getType();
             sensors = gson.fromJson(sensorString, type);
         }
+    }
+
+    // Define a named static inner class extending TypeToken
+    private static class SensorSetTypeToken extends TypeToken<Set<Sensor>> {
+        private static final long serialVersionUID = 1L;
     }
 
     @Override
@@ -77,7 +83,7 @@ public class PretendDatabaseSecurityRepositoryImpl implements SecurityRepository
 
     @Override
     public Set<Sensor> getSensors() {
-        return sensors;
+        return Collections.unmodifiableSet(new HashSet<>(sensors));
     }
 
     @Override
